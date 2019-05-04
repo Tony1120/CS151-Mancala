@@ -1,62 +1,82 @@
+/**
+ * @author Junzhe Tony Liang
+ * @author Bryanna Valdivia
+ * @author Victor Nguyen
+ * @version 1.0 05/04/19
+ * 
+ * Models a pop up frame for when the game ends - displays the winner
+ */
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 
+/**
+ * Constructs a frame connected to the model to display who won based on the data
+ */
 public class PopUpWindow extends JFrame implements ChangeListener
 {
-   JLabel label;
-   JButton button;
-   DataModel dataModel;
-   PopUpWindow(DataModel d)
-   {
-      super( "ending the game" );        // invoke the JFrame constructor
-      dataModel = d;
-      setPreferredSize(new Dimension(450,200));
+    private JLabel winnerLabel;
+    private  JButton exitButton;
+    private DataModel dataModel;
+    
+    /**
+     * Constructs the frame shown when the game ends, displays the winner.
+     * @param d is a reference of the data model
+     */
+    PopUpWindow(DataModel d)
+    {
 
-      setLayout(new BorderLayout());
-      label = new JLabel();
-      button = new JButton("close");// / construct a JLabel
+        super( "Winner winner chicken dinner!" ); // invoke the JFrame constructor
+        dataModel = d;
+        setPreferredSize(new Dimension(600,200));
+        setResizable(false);
+        setLayout(new BorderLayout());
+        winnerLabel = new JLabel("", JLabel.CENTER);
+        winnerLabel.setFont(new Font("Serif", Font.BOLD, 70));
+        exitButton = new JButton("Exit Game");// / construct a JLabel
 
-      button.addActionListener(new java.awt.event.ActionListener() {
-         @Override
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            System.exit(0);
-         }
-      });
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                System.exit(0);
+            }
+        });
 
-      add( label, BorderLayout.NORTH );                        // add the label to the JFrame
-      add(button, BorderLayout.SOUTH);
+        add(winnerLabel, BorderLayout.CENTER );
+        add(exitButton, BorderLayout.SOUTH);
 
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        pack();
+        setLocationRelativeTo(null);
+    }
 
-      setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-      Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-      setLocation((int) ((dimension.getWidth() - getWidth())/2 ),(int) ((dimension.getHeight() - getWidth())/2));
-      pack();
-
-   }
-
-   @Override
-   public void stateChanged(ChangeEvent e)
-   {
-      int winner = dataModel.getWinner();
-      switch (winner) {
-         case 1: {
-            label.setText("play1 wins !!!");
-            setVisible(true);
-            break;
-         }
-         case 2: {
-            label.setText("play2 wins !!!");
-            setVisible(true);
-            break;
-         }
-         case 0: {
-            label.setText("the two fools tie");
-            setVisible(true);
-            break;
-         }
-      }
-   }
+    /**
+     * Determines if the end game pop up window is displayed or not
+     * Checks the winner after a change in the data to also display who won
+     * @param e is the change listener event 
+     */
+    @Override
+    public void stateChanged(ChangeEvent e)
+    {
+        int winner = dataModel.getWinner();
+        switch (winner) {
+            case 1: {
+                winnerLabel.setText("Player A Wins!!!");
+                setVisible(true);
+                break;
+            }
+            case 2: {
+                winnerLabel.setText("Player B Wins!!!");
+                setVisible(true);
+                break;
+            }
+            case 0: {
+                winnerLabel.setText("It's a Tie!!!");
+                setVisible(true);
+                break;
+            }
+        }
+    }
 }
-
